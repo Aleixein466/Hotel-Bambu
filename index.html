@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#315C45" />
+    <meta name="description" content="Prototipo UX/UI del Hotel Bambú Plaza en Mocoa, Putumayo." />
+    <title>Hotel Bambú Plaza · Mocoa</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gilda+Display&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Saltar al contenido</a>
+    <div class="prototype-banner" role="note">
+      <span><strong>Prototipo UX/UI</strong> · Imágenes y datos operativos son demostrativos</span>
+      <button type="button" data-route="admin">Ver panel administrativo <span aria-hidden="true">↗</span></button>
+    </div>
+
+    <header class="site-header" id="site-header">
+      <a class="brand" href="#inicio" data-route="inicio" aria-label="Hotel Bambú Plaza, ir al inicio">
+        <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-label="Símbolo de bambú estilizado">
+          <rect x="18" y="5" width="9" height="38" rx="4.5" fill="currentColor" />
+          <path d="M12 17c7 0 10-4 11-10-7 0-11 3-11 10Zm15 11c7-1 11-5 12-12-8 0-12 4-12 12ZM8 32c7 0 11-3 13-10-8 0-12 3-13 10Z" fill="currentColor" opacity=".72" />
+          <path d="M17 18h11M16 31h12" stroke="#F8F6F0" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+        <span class="brand-copy"><strong>Hotel Bambú</strong><small>PLAZA · MOCOA</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Navegación principal">
+        <a href="#inicio" data-route="inicio">Inicio</a>
+        <a href="#habitaciones" data-route="habitaciones">Habitaciones</a>
+        <a href="#galeria" data-route="galeria">Galería</a>
+        <a href="#contacto" data-route="contacto">Ubicación y contacto</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-button menu-button" id="menu-button" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+        <button class="button button-dark header-cta" type="button" data-booking-open>Consultar estadía</button>
+      </div>
+    </header>
+
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Navegación móvil" hidden>
+      <a href="#inicio" data-route="inicio">Inicio</a>
+      <a href="#habitaciones" data-route="habitaciones">Habitaciones</a>
+      <a href="#galeria" data-route="galeria">Galería</a>
+      <a href="#contacto" data-route="contacto">Ubicación y contacto</a>
+      <a href="#admin" data-route="admin">Panel administrativo demo</a>
+    </nav>
+
+    <main id="app" tabindex="-1"></main>
+
+    <button class="whatsapp-fab" id="whatsapp-fab" type="button" aria-label="WhatsApp por configurar">
+      <span aria-hidden="true">◖</span><span>WhatsApp</span><small>Por configurar</small>
+    </button>
+
+    <div class="booking-shell" id="booking-shell" hidden>
+      <button class="booking-backdrop" type="button" data-booking-close aria-label="Cerrar solicitud"></button>
+      <aside class="booking-drawer" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+        <div class="drawer-head">
+          <div><span class="eyebrow">Solicitud de estadía</span><h2 id="booking-title">Cuéntanos tu plan</h2></div>
+          <button class="icon-button" type="button" data-booking-close aria-label="Cerrar">×</button>
+        </div>
+        <div class="stepper" aria-label="Progreso de la solicitud">
+          <span class="active">1. Estadía</span><span>2. Datos</span><span>3. Resumen</span>
+        </div>
+        <form id="booking-form" novalidate>
+          <section class="booking-step active" data-step="1">
+            <label>Habitación
+              <select name="room" required><option value="">Selecciona una habitación</option></select>
+            </label>
+            <div class="field-row">
+              <label>Entrada<input name="checkin" type="date" required /></label>
+              <label>Salida<input name="checkout" type="date" required /></label>
+            </div>
+            <label>Huéspedes<select name="guests" required><option value="1">1 huésped</option><option value="2">2 huéspedes</option><option value="3">3 huéspedes</option><option value="4">4 huéspedes</option></select></label>
+            <div class="notice"><strong>Disponibilidad por confirmar</strong><p>En la versión final, esta consulta verificará reservas, bloqueos y mantenimiento antes de continuar.</p></div>
+          </section>
+          <section class="booking-step" data-step="2">
+            <label>Nombre completo<input name="guestName" autocomplete="name" placeholder="Ej. María López" required /></label>
+            <label>Teléfono de contacto<input name="phone" autocomplete="tel" inputmode="tel" placeholder="Ej. 300 000 0000" required /></label>
+            <label class="checkbox"><input name="consent" type="checkbox" required /><span>Acepto el tratamiento de mis datos para gestionar esta solicitud de reserva.</span></label>
+            <p class="fine-print">No solicitamos documento, correo ni datos de pago en este paso.</p>
+          </section>
+          <section class="booking-step" data-step="3">
+            <div class="summary-card" id="booking-summary"></div>
+            <div class="notice warning"><strong>Esta es una solicitud, no una reserva confirmada</strong><p>El hotel debe revisar la disponibilidad y confirmar manualmente por WhatsApp.</p></div>
+          </section>
+          <p class="form-error" id="booking-error" role="alert"></p>
+          <div class="drawer-actions">
+            <button class="button button-ghost" id="booking-prev" type="button" hidden>Volver</button>
+            <button class="button button-primary" id="booking-next" type="button">Continuar</button>
+            <button class="button button-primary" id="booking-submit" type="submit" hidden>Guardar solicitud demo</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Vista ampliada de imagen">
+      <button class="lightbox-backdrop" type="button" data-lightbox-close aria-label="Cerrar imagen"></button>
+      <figure><img id="lightbox-image" src="" alt="" /><figcaption id="lightbox-caption"></figcaption><button class="icon-button" type="button" data-lightbox-close aria-label="Cerrar">×</button></figure>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
