@@ -3,5 +3,4 @@ site-package.zip
 .sites-runtime/
 node_modules/
 dist/
-.openai/
 docs/
