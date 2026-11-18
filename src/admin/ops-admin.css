@@ -1,0 +1,72 @@
+/* Páginas operativas del panel: resumen, solicitudes, reservas, calendario, usuarios, cuenta. */
+.ops-stack { display: grid; gap: 22px; }
+.ops-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.stats-grid.ops-stats { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+a.stat-card { display: block; color: inherit; text-decoration: none; }
+a.stat-card:hover { background: var(--color-mint-boarding-pass); }
+.ops-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; font-size: .84rem; }
+.ops-list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,.15); }
+.ops-list small { opacity: .7; }
+.ops-muted { opacity: .7; font-size: .8rem; }
+.ops-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.ops-tabs button { min-height: 40px; padding: 8px 18px; border: 1px solid var(--color-obsidian); border-radius: var(--radius-pill); background: var(--color-paper-white); cursor: pointer; }
+.ops-tabs button[aria-selected="true"] { background: var(--color-obsidian); color: #fff; }
+.ops-toolbar { margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.ops-toolbar label { display: grid; gap: 5px; font-size: .75rem; flex: 1 1 150px; max-width: 240px; }
+.ops-form-card { margin-bottom: 20px; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.row-actions .button, .ops-table .button { min-height: 34px; padding: 4px 12px; font-size: .78rem; }
+.ops-table tbody tr[data-selected="true"] { background: var(--color-mint-boarding-pass); }
+.ops-table .cell-wrap { white-space: normal; min-width: 160px; }
+.ops-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px); gap: 18px; align-items: start; }
+.ops-detail { position: sticky; top: 16px; display: grid; gap: 14px; }
+.ops-detail dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: .85rem; }
+.ops-detail dt { opacity: .7; }
+.ops-detail dd { margin: 0; overflow-wrap: anywhere; }
+.ops-detail textarea { min-height: 90px; }
+.ops-detail label { display: grid; gap: 6px; font-size: .8rem; }
+.ops-detail-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.ops-detail-head h3 { margin: 0; font-size: 1rem; font-weight: 400; }
+.ops-pager { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; font-size: .82rem; }
+.ops-callout { padding: 12px 14px; border: 1px solid var(--color-obsidian); border-radius: var(--radius-button); background: var(--color-champagne-beige); font-size: .84rem; display: grid; gap: 6px; }
+.ops-callout code { overflow-wrap: anywhere; }
+.ops-qr { width: 192px; height: 192px; background: #fff; border: 1px solid var(--color-obsidian); padding: 6px; }
+.ops-secret { font-family: monospace; overflow-wrap: anywhere; user-select: all; }
+.ops-logo { max-width: 160px; max-height: 80px; border: 1px solid rgba(0,0,0,.25); border-radius: var(--radius-button); background: #fff; }
+.ops-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ops-text-link { color: inherit; text-decoration: underline; }
+
+/* Calendario */
+.cal-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.cal-bar h2 { margin: 0 8px; font-size: 1.1rem; font-weight: 400; min-width: 150px; text-align: center; }
+.cal-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0 0 14px; padding: 0; list-style: none; font-size: .8rem; }
+.cal-legend li { display: flex; align-items: center; gap: 7px; }
+.cal-swatch { width: 18px; height: 14px; border: 1px solid var(--color-obsidian); border-radius: 3px; display: inline-block; }
+.cal-scroll { overflow-x: auto; border: 1px solid var(--color-obsidian); border-radius: var(--radius-card); background: var(--color-paper-white); }
+.cal-grid { border-collapse: separate; border-spacing: 0; font-size: .72rem; width: max-content; min-width: 100%; }
+.cal-grid th, .cal-grid td { min-width: 34px; height: 36px; padding: 0; border-right: 1px solid rgba(0,0,0,.12); border-bottom: 1px solid rgba(0,0,0,.12); text-align: center; }
+.cal-grid thead th { position: sticky; top: 0; background: var(--color-parchment); z-index: 2; font-weight: 400; }
+.cal-grid thead th small { display: block; opacity: .6; font-size: .6rem; }
+.cal-grid .cal-room { position: sticky; left: 0; z-index: 3; min-width: 120px; max-width: 150px; padding: 4px 8px; background: var(--color-parchment); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+.cal-grid thead .cal-room { z-index: 4; }
+.cal-grid .cal-today { background: var(--color-mint-boarding-pass); }
+.cal-grid thead .cal-today { outline: 2px solid var(--color-forest-command); outline-offset: -2px; }
+.cal-grid .cal-weekend { background: rgba(0,0,0,.035); }
+.cal-cell { display: block; width: 100%; height: 100%; min-height: 34px; border: 0; padding: 0; background: transparent; color: inherit; text-decoration: none; font-size: .62rem; line-height: 34px; overflow: hidden; cursor: pointer; }
+.cal-cell:hover, .cal-cell:focus-visible { outline: 2px solid var(--color-obsidian); outline-offset: -2px; }
+.cal-confirmed, .cal-swatch.cal-confirmed { background: #2d9b4c; color: #fff; }
+.cal-checked_in, .cal-swatch.cal-checked_in { background: #1d5f8f; color: #fff; }
+.cal-block, .cal-swatch.cal-block { background: repeating-linear-gradient(45deg, #777, #777 4px, #999 4px, #999 8px); color: #fff; }
+.cal-pending, .cal-swatch.cal-pending { background: #fff3cf; color: #000; box-shadow: inset 0 0 0 2px #b07a00; }
+.cal-hint { margin-top: 10px; }
+
+@media (max-width: 900px) {
+  .ops-split { grid-template-columns: minmax(0, 1fr); }
+  .ops-detail { position: static; }
+}
+@media (max-width: 480px) {
+  .ops-toolbar label { max-width: none; flex-basis: 100%; }
+  .stats-grid.ops-stats { grid-template-columns: repeat(2, 1fr); }
+}
+.cal-bar h2::first-letter { text-transform: uppercase; }
+.ops-table .row-actions { flex-wrap: nowrap; }

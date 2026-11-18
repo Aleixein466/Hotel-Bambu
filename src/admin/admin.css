@@ -1,0 +1,34 @@
+/* Panel administrativo. Base en styles.css (.admin-layout, .panel, .data-table, .state, .stats-grid). */
+.admin-layout { min-height: 100svh; }
+.admin-sidebar { top: 0; height: 100svh; overflow-y: auto; }
+.admin-sidebar-head { display: flex; align-items: center; justify-content: space-between; }
+.admin-sidebar .brand { color: #fff; }
+.admin-menu-toggle { display: none; color: #fff; border-color: rgba(255,255,255,.4); }
+.admin-nav a { width: 100%; padding: 11px 13px; display: flex; gap: 11px; align-items: center; border-radius: var(--radius-button); color: rgba(255,255,255,.75); text-decoration: none; font-size: .9rem; }
+.admin-nav a.active, .admin-nav a:hover { background: rgba(255,255,255,.14); color: #fff; }
+.admin-user-actions { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.admin-user-actions a, .admin-user-actions .link-button { color: rgba(255,255,255,.85); font-size: .78rem; }
+.admin-main:focus { outline: none; }
+.admin-heading h1 { margin: 0 0 6px; font-family: var(--font-sans); font-size: 1.6rem; font-weight: 400; letter-spacing: -0.01em; }
+.admin-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.admin-toolbar { margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.admin-toolbar label { display: grid; gap: 5px; font-size: .75rem; }
+.admin-form { display: grid; gap: 18px; }
+.admin-form fieldset { margin: 0; padding: 18px; display: grid; gap: 14px; border: 1px solid rgba(0,0,0,.25); border-radius: var(--radius-card); }
+.admin-form legend { padding: 0 6px; font-size: .85rem; }
+.admin-form label { display: grid; gap: 6px; font-size: .8rem; }
+.admin-form .checkbox { display: flex; gap: 10px; align-items: center; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.form-actions { position: sticky; bottom: 0; z-index: 5; padding: 14px 0; display: flex; flex-wrap: wrap; gap: 10px; background: linear-gradient(transparent, var(--color-linen-cream) 30%); }
+.field-hint { font-size: .72rem; opacity: .7; }
+.table-scroll { overflow-x: auto; }
+.state.red { background: #f3d2d2; }
+.state.blue { background: #d6e6f5; }
+@media (max-width: 760px) {
+  .admin-sidebar { position: sticky; top: 0; z-index: 20; height: auto; padding: 10px 14px; }
+  .admin-sidebar .brand { display: flex; padding: 0; }
+  .admin-menu-toggle { display: inline-flex; }
+  .admin-nav, .admin-user { display: none; }
+  .admin-sidebar.open .admin-nav { display: grid; margin-top: 12px; overflow: visible; }
+  .admin-sidebar.open .admin-user { display: block; }
+}

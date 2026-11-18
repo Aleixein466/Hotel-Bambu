@@ -1,0 +1,50 @@
+/* Componentes compartidos (público y panel). Usa los tokens de styles.css. */
+.link-button { padding: 0; border: 0; background: none; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
+.button-danger { background: #9b2d2d; color: #fff; border: 1px solid #6e1f1f; }
+.button-danger:hover { background: #7f2424; }
+.button[disabled], button[disabled] { opacity: .55; cursor: not-allowed; }
+:focus-visible { outline: 3px solid var(--color-forest-command); outline-offset: 2px; }
+
+.auth-shell { min-height: 100svh; display: grid; place-items: center; padding: 24px 16px; background: var(--color-linen-cream); }
+.auth-card { width: min(440px, 100%); padding: 32px 28px; display: grid; gap: 18px; background: var(--color-parchment); border: 1px solid var(--color-obsidian); border-radius: var(--radius-card); }
+.auth-card h1 { margin: 0; font-family: var(--font-sans); font-size: 1.5rem; font-weight: 400; }
+.auth-brand { color: var(--color-obsidian); }
+.auth-form { display: grid; gap: 16px; }
+.auth-field { display: grid; gap: 7px; font-size: .85rem; }
+.auth-field input, .search-field input { width: 100%; }
+.password-field { display: flex; gap: 8px; }
+.password-field input { flex: 1; min-width: 0; }
+.password-field .button { padding-inline: 12px; }
+.form-error { margin: 0; color: #9b2d2d; font-size: .85rem; }
+.form-error:empty { display: none; }
+.fine-print { margin: 0; font-size: .78rem; opacity: .72; }
+
+.toast-stack { position: fixed; z-index: 400; left: 50%; bottom: 22px; transform: translateX(-50%); width: min(440px, calc(100% - 32px)); display: grid; gap: 8px; pointer-events: none; }
+.toast-item { padding: 13px 16px; border-radius: var(--radius-button); background: var(--color-obsidian); color: #fff; font-size: .86rem; text-align: center; box-shadow: 0 6px 24px rgba(0,0,0,.2); }
+.toast-item.success { background: #1f5f33; }
+.toast-item.error { background: #8a2424; }
+
+.modal-shell { position: fixed; inset: 0; z-index: 350; display: grid; place-items: center; padding: 16px; }
+.modal-backdrop { position: absolute; inset: 0; border: 0; background: rgba(0,0,0,.45); cursor: pointer; }
+.modal-card { position: relative; width: min(480px, 100%); max-height: calc(100svh - 32px); overflow: auto; padding: 24px; display: grid; gap: 16px; background: var(--color-parchment); border: 1px solid var(--color-obsidian); border-radius: var(--radius-card); }
+.modal-card.wide { width: min(980px, 100%); }
+.modal-card h2 { margin: 0; font-family: var(--font-sans); font-size: 1.2rem; font-weight: 400; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+
+.dropzone { display: grid; gap: 6px; place-items: center; padding: 26px 16px; text-align: center; border: 2px dashed var(--color-obsidian); border-radius: var(--radius-card); background: var(--color-paper-white); cursor: pointer; }
+.dropzone.dragging { background: var(--color-mint-boarding-pass); }
+.dropzone small { opacity: .65; font-size: .75rem; }
+.search-field { display: grid; gap: 6px; font-size: .8rem; }
+.media-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.media-option { width: 100%; padding: 6px; display: grid; gap: 6px; border: 1px solid rgba(0,0,0,.25); border-radius: var(--radius-button); background: #fff; cursor: pointer; text-align: left; font-size: .72rem; }
+.media-option.selected { border: 2px solid var(--color-forest-command); background: var(--color-mint-boarding-pass); }
+.media-thumb { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px; background: var(--color-linen-cream); display: block; }
+.media-thumb.empty { border: 1px dashed rgba(0,0,0,.3); }
+
+.loading-state, .error-state, .empty-state { padding: 28px 16px; display: grid; gap: 10px; justify-items: center; text-align: center; }
+.empty-state { border: 1px dashed rgba(0,0,0,.3); border-radius: var(--radius-card); }
+.spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,.15); border-top-color: var(--color-forest-command); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+.concept-badge { display: inline-block; padding: 3px 8px; border-radius: var(--radius-pill); background: rgba(0,0,0,.7); color: #fff; font-size: .68rem; }

@@ -4,3 +4,16 @@ site-package.zip
 node_modules/
 dist/
 docs/
+test-results/
+playwright-report/
+.env
+.env.*
+!.env.example
+supabase/.temp/
+supabase/.branches/
+
+# Capturas antiguas del prototipo (regenerables con scripts/capture.mjs)
+artifacts/
+
+# Fotografías originales: privadas, no se publican (algunas muestran personas)
+fotos-originales/
