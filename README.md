@@ -6,7 +6,9 @@ desde un panel protegido. Todo se guarda en PostgreSQL (Supabase) y se refleja e
 tocar código ni volver a desplegar.
 
 - **Sitio público:** `/`, `/habitaciones`, `/habitaciones/01`, `/galeria`, `/novedades`, `/informacion`, `/contacto`
-- **Panel administrativo:** **`/admin`** (inicio de sesión en **`/admin/login`**)
+- **Panel administrativo:** enlace **Administración** (candado) en el pie de página, columna "Información",
+  y al final del menú móvil. Sin sesión abre el inicio de sesión; con sesión abierta entra directo al panel.
+  La ruta (`/admin`) no es secreta: la protección es la autenticación, los roles y las políticas RLS.
 
 ## Arquitectura
 
@@ -69,6 +71,11 @@ copy .env.example .env.local  # y pega la URL y la "anon key" que muestra `npx s
 npm run dev                   # http://127.0.0.1:5173
 ```
 
+> **Un solo destino por archivo.** Si una variable aparece dos veces en `.env.local`, gana la última. Para no
+> confundir entornos: `.env.development.local` → Supabase local (`npm run dev`) y
+> `.env.production.local` → producción (`npm run build`). Las pruebas E2E ignoran estos archivos y siempre
+> usan Supabase local en su propio puerto (5179).
+
 Crear un administrador local (la contraseña se pide de forma oculta):
 
 ```powershell
@@ -86,11 +93,14 @@ Los correos de recuperación locales se ven en Mailpit: http://127.0.0.1:54324
 | `npm run build` | Compilación de producción |
 | `npm run test:unit` | WhatsApp (`wa.me`, codificación), fechas, solapamientos, slugs |
 | `npm run test:db` | Contra Supabase local: RLS, visitantes sin acceso a datos personales, validaciones del servidor, concurrencia de confirmaciones, bloqueos, límites, publicación/ocultación, papelera, permisos de editor, auditoría |
-| `npm run test:e2e` | Navegador (Playwright): protección de `/admin`, login/logout, MFA (TOTP real), recuperación e invitación por correo (Mailpit) abiertas en otro dispositivo, revocación de acceso, edición de habitación visible en otra sesión, publicaciones, imágenes, solicitudes y confirmación |
+| `npm run test:e2e` | Navegador (Playwright): enlace **Administración** en pie de página y menú móvil, acceso denegado sin rol, reservas/bloqueos desde el editor de habitación, protección de `/admin`, login/logout, MFA (TOTP real), recuperación e invitación por correo (Mailpit) abiertas en otro dispositivo, revocación de acceso, edición de habitación visible en otra sesión, publicaciones, imágenes, solicitudes y confirmación |
 
 Las pruebas de BD y E2E crean usuarios de prueba **solo** en Supabase local y se niegan a correr contra un
 proyecto remoto. Antes de E2E: `npx playwright install chromium`. La prueba de invitación desde el panel
 requiere `npx supabase functions serve invite-user` (si no está servida, se omite y lo indica).
+
+`npm run smoke:prod` revisa producción **en solo lectura** con la clave pública: sin `SITE_URL` comprueba
+solo Supabase (útil antes de desplegar el sitio); con `SITE_URL` también HTTPS, cabeceras y rutas.
 
 ## Producción (paso a paso)
 

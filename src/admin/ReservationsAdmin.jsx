@@ -118,7 +118,8 @@ function ReservationsTab({ rooms }) {
   const toast = useToast();
   const confirm = useConfirm();
   const invalidate = useInvalidateAdmin();
-  const [filters, setFilters] = useState({ status: 'all', room: '', from: '', to: '' });
+  const [params] = useSearchParams();
+  const [filters, setFilters] = useState({ status: 'all', room: params.get('habitacion') || '', from: '', to: '' });
   const [creating, setCreating] = useState(false);
   const [rowError, setRowError] = useState('');
   const set = key => e => setFilters(f => ({ ...f, [key]: e.target.value }));
@@ -213,7 +214,8 @@ function BlocksTab({ rooms }) {
   const toast = useToast();
   const confirm = useConfirm();
   const invalidate = useInvalidateAdmin();
-  const [form, setForm] = useState(EMPTY_BLOCK);
+  const [params] = useSearchParams();
+  const [form, setForm] = useState({ ...EMPTY_BLOCK, room_id: params.get('habitacion') || '' });
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [showInactive, setShowInactive] = useState(false);

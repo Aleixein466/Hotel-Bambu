@@ -15,6 +15,21 @@ const NAV = [
   { to: '/contacto', label: 'Ubicación y contacto' },
 ];
 
+// El panel no depende de una URL secreta: /admin exige sesión y rol (RequireStaff + RLS).
+// Sin sesión lleva al inicio de sesión; con sesión válida, directo al panel.
+function LockIcon() {
+  return (
+    <svg className="lock-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+      <rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
+function AdminLink({ className, onClick }) {
+  return <Link className={className} to="/admin" onClick={onClick}><LockIcon /><span>Administración</span></Link>;
+}
+
 function Header({ menuOpen, setMenuOpen }) {
   const booking = useBooking();
   return (
@@ -35,6 +50,9 @@ function Header({ menuOpen, setMenuOpen }) {
       {menuOpen && (
         <nav className="mobile-menu" id="mobile-menu" aria-label="Navegación móvil">
           {NAV.map(item => <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setMenuOpen(false)}>{item.label}</NavLink>)}
+          <div className="mobile-menu-secondary">
+            <AdminLink className="admin-link" onClick={() => setMenuOpen(false)} />
+          </div>
         </nav>
       )}
     </>
@@ -68,6 +86,7 @@ function Footer({ settings, content }) {
           <ul>
             <li><Link to="/informacion">Preguntas y políticas</Link></li>
             {times.map(t => <li key={t}>{t}</li>)}
+            <li><AdminLink className="footer-admin" /></li>
           </ul>
         </div>
         <div>
@@ -80,7 +99,7 @@ function Footer({ settings, content }) {
           </ul>
         </div>
       </div>
-      <div className="footer-bottom"><span>© {new Date().getFullYear()} {name}</span>{footer.note && <span>{footer.note}</span>}</div>
+<div className="footer-bottom"><span>© {new Date().getFullYear()} {name}</span>{footer.note && <span>{footer.note}</span>}</div>
     </footer>
   );
 }

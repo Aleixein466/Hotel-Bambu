@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 import { supabase, unwrap, unwrapRows } from '../lib/supabase.js';
 import { mediaUrl } from '../lib/media.js';
-import { formatDateTime, formatPrice, PUBLISH_STATUS, ROOM_OPERATIONAL } from '../lib/format.js';
+import { formatDate, formatDateTime, formatPrice, hotelToday, PUBLISH_STATUS, ROOM_OPERATIONAL } from '../lib/format.js';
 import { useAuth } from '../auth/AuthProvider.jsx';
 import { EmptyState, ErrorState, Loading, useConfirm, useToast } from '../ui/Feedback.jsx';
 import { MediaPicker, MediaThumb } from '../ui/MediaPicker.jsx';
@@ -101,7 +101,52 @@ export default function RoomEditor() {
     <AdminPage title={title} description="Los textos, el precio, los servicios y la imagen principal se guardan como borrador hasta que pulses Publicar cambios."
       actions={<Link className="button button-ghost" to="/admin/habitaciones">← Habitaciones</Link>}>
       {body}
+      {!isNew && isAdmin && roomQ.data && <RoomBookings roomId={roomQ.data.id} />}
     </AdminPage>
+  );
+}
+
+const RES_STATUS = { confirmed: 'Confirmada', checked_in: 'Hospedado' };
+
+/** Próximas reservas, solicitudes pendientes y bloqueos de la habitación (solo administradores: datos de huéspedes). */
+function RoomBookings({ roomId }) {
+  const today = hotelToday();
+  const q = useQuery({
+    queryKey: ['admin', 'room', roomId, 'bookings', today],
+    queryFn: async () => {
+      const [reservations, requests, blocks] = await Promise.all([
+        unwrap(supabase.from('reservations').select('id,guest_name,check_in,check_out,status').eq('room_id', roomId)
+          .in('status', ['confirmed', 'checked_in']).gt('check_out', today).order('check_in').limit(10)),
+        unwrap(supabase.from('booking_requests').select('id,code,guest_name,check_in,check_out').eq('room_id', roomId)
+          .eq('status', 'pending').gt('check_out', today).order('check_in').limit(10)),
+        unwrap(supabase.from('room_blocks').select('id,start_date,end_date,reason').eq('room_id', roomId)
+          .eq('active', true).gte('end_date', today).order('start_date').limit(10)),
+      ]);
+      return { reservations, requests, blocks };
+    },
+  });
+  const rooms = encodeURIComponent(roomId);
+  return (
+    <section className="panel" aria-labelledby="room-bookings-title" style={{ marginTop: 24 }}>
+      <div className="panel-head">
+        <h3 id="room-bookings-title">Reservas y bloqueos de esta habitación</h3>
+        <div className="ca-row">
+          <Link className="button button-ghost" to={`/admin/reservas?habitacion=${rooms}`}>Ver todas las reservas</Link>
+          <Link className="button button-ghost" to={`/admin/reservas?tab=bloqueos&habitacion=${rooms}`}>Bloquear fechas</Link>
+        </div>
+      </div>
+      {q.error ? <ErrorState error={q.error} onRetry={q.refetch} /> : q.isLoading ? <Loading /> : (
+        q.data.reservations.length + q.data.requests.length + q.data.blocks.length === 0
+          ? <p className="ca-meta">Sin reservas, solicitudes pendientes ni bloqueos desde hoy.</p>
+          : (
+            <ul className="ca-list">
+              {q.data.reservations.map(r => <li key={r.id}>Reserva · {r.guest_name} · {formatDate(r.check_in)} → {formatDate(r.check_out)} · {RES_STATUS[r.status]}</li>)}
+              {q.data.requests.map(r => <li key={r.id}>Solicitud {r.code} pendiente · {r.guest_name} · {formatDate(r.check_in)} → {formatDate(r.check_out)} · <Link to="/admin/solicitudes">Revisar</Link></li>)}
+              {q.data.blocks.map(b => <li key={b.id}>Bloqueo · {b.reason || 'Sin motivo'} · {formatDate(b.start_date)} → {formatDate(b.end_date)}</li>)}
+            </ul>
+          )
+      )}
+    </section>
   );
 }
 

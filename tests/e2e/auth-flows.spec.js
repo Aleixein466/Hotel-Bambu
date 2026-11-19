@@ -10,7 +10,7 @@ async function uiLogin(page, email, password) {
   await page.goto('/admin/login');
   await page.getByLabel('Correo electrónico').fill(email);
   await page.locator('input[name="password"]').fill(password);
-  await page.getByRole('button', { name: 'Ingresar' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
 }
 
 /** Con plantillas token_hash el token solo se canjea al pulsar "Continuar" (protege de escáneres de correo). */
@@ -121,7 +121,7 @@ async function acceptInvite(browser, link) {
 
 test('Enlace de invitación (como el de create-admin --invite): crea contraseña en otro dispositivo', async ({ browser }) => {
   const email = `invitado-${Date.now()}@bambu.local`;
-  const { data, error } = await service.auth.admin.generateLink({ type: 'invite', email, options: { redirectTo: 'http://127.0.0.1:5174/admin/restablecer' } });
+  const { data, error } = await service.auth.admin.generateLink({ type: 'invite', email, options: { redirectTo: 'http://127.0.0.1:5179/admin/restablecer' } });
   expect(error).toBeNull();
   try {
     await service.from('profiles').insert({ id: data.user.id, email, full_name: 'Invitado', role: 'editor', active: true });
@@ -132,7 +132,7 @@ test('Enlace de invitación (como el de create-admin --invite): crea contraseña
 });
 
 test('Invitación desde el panel (función invite-user)', async ({ page, browser }) => {
-  const probe = await fetch(`${URL}/functions/v1/invite-user`, { method: 'OPTIONS', headers: { Origin: 'http://127.0.0.1:5174' } }).catch(() => null);
+  const probe = await fetch(`${URL}/functions/v1/invite-user`, { method: 'OPTIONS', headers: { Origin: 'http://127.0.0.1:5179' } }).catch(() => null);
   test.skip(probe?.status !== 200, 'Función no servida: ejecuta `npx supabase functions serve invite-user`');
   const email = `invitado-${Date.now()}@bambu.local`;
   await uiLogin(page, USERS.admin.email, USERS.admin.password);

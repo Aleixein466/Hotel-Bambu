@@ -18,6 +18,7 @@ export function AuthLayout({ title, children }) {
         <Link className="brand auth-brand" to="/" aria-label="Volver al sitio"><BrandMark /><span className="brand-copy"><strong>Hotel Bambú</strong><small>PANEL ADMINISTRATIVO</small></span></Link>
         <h1 id="auth-title">{title}</h1>
         {children}
+        <Link className="text-link auth-back" to="/">← Volver al sitio web</Link>
       </section>
     </main>
   );
@@ -118,7 +119,7 @@ export default function LoginPage() {
         {auth.status === 'noAccess' && <p className="form-error" role="alert">Tu cuenta no tiene acceso al panel. <button type="button" className="link-button" onClick={auth.signOut}>Cerrar sesión</button></p>}
         {error && <p className="form-error" role="alert">{error}</p>}
         {locked && <p className="form-error" role="status">Por seguridad, espera {Math.ceil((lock.until - now) / 1000)} s antes de intentarlo otra vez.</p>}
-        <button className="button button-primary" type="submit" disabled={busy || locked || !email || !password}>{busy ? 'Ingresando…' : 'Ingresar'}</button>
+        <button className="button button-primary" type="submit" disabled={busy || locked || !email || !password}>{busy ? 'Iniciando sesión…' : 'Iniciar sesión'}</button>
         <Link className="text-link" to="/admin/recuperar">¿Olvidaste tu contraseña?</Link>
       </form>
       <p className="fine-print">Acceso exclusivo para personal autorizado del hotel. No hay registro público.</p>

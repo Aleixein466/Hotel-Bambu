@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase.js';
 
 const AuthContext = createContext(null);
@@ -80,6 +80,7 @@ export function RequireStaff({ children }) {
         <h1>Sin acceso al panel</h1>
         <p>Tu cuenta no tiene un rol administrativo activo. Pide a un administrador que te habilite.</p>
         <button className="button button-primary" type="button" onClick={auth.signOut}>Cerrar sesión</button>
+        <Link className="text-link auth-back" to="/">← Volver al sitio web</Link>
       </FullPageStatus>
     );
   }

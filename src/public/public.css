@@ -91,3 +91,13 @@ main:focus { outline: none; }
   .post-grid { padding-top: 32px; padding-bottom: 70px; }
   .info-page { padding-top: 32px; gap: 32px; }
 }
+
+/* Acceso al panel administrativo */
+.lock-icon { flex: none; }
+.footer-admin, .admin-link { display: inline-flex; align-items: center; gap: 7px; }
+.footer .footer-admin { color: rgba(255,255,255,0.64); text-decoration: none; }
+.footer .footer-admin:hover, .footer .footer-admin:focus-visible { color: var(--color-paper-white); text-decoration: underline; text-underline-offset: 3px; }
+.mobile-menu-secondary { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(38, 49, 43, 0.18); display: grid; }
+.mobile-menu-secondary .admin-link { font-size: 0.9rem; opacity: 0.82; }
+/* Deja espacio para el botón flotante de WhatsApp/Consultar al final de la página */
+.footer { padding-bottom: 96px; }

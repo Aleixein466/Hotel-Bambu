@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Verificación de SOLO LECTURA del entorno desplegado. No escribe datos ni usa claves privadas.
 //
-//   SITE_URL=https://tu-dominio VITE_SUPABASE_URL=https://<ref>.supabase.co VITE_SUPABASE_ANON_KEY=<anon> npm run smoke:prod
+//   [SITE_URL=https://tu-dominio] VITE_SUPABASE_URL=https://<ref>.supabase.co VITE_SUPABASE_ANON_KEY=<anon> npm run smoke:prod
 //
 // La clave anon es pública (es la misma que lleva el sitio en el navegador).
 import { createClient } from '@supabase/supabase-js';
@@ -9,8 +9,8 @@ import { createClient } from '@supabase/supabase-js';
 const site = (process.env.SITE_URL || '').replace(/\/$/, '');
 const url = process.env.VITE_SUPABASE_URL;
 const anon = process.env.VITE_SUPABASE_ANON_KEY;
-if (!site || !url || !anon) {
-  console.error('Define SITE_URL, VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.');
+if (!url || !anon) {
+  console.error('Define VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY (y SITE_URL cuando el sitio esté desplegado).');
   process.exit(1);
 }
 if (/service_role/.test(Buffer.from((anon.split('.')[1] || ''), 'base64').toString())) {
@@ -26,6 +26,7 @@ const check = async (name, fn) => {
 const assert = (cond, msg) => { if (!cond) throw new Error(msg); };
 const db = createClient(url, anon, { auth: { persistSession: false } });
 
+if (site) {
 await check('Sitio responde por HTTPS', async () => {
   assert(site.startsWith('https://'), 'SITE_URL debe usar https');
   const r = await fetch(site); assert(r.ok, `HTTP ${r.status}`);
@@ -43,6 +44,10 @@ for (const path of ['/admin/login', '/admin', '/habitaciones/01', '/novedades/no
     assert((await r.text()).includes('id="root"'), 'no devuelve la aplicación');
   });
 }
+} else {
+  console.log('SITE_URL no definido: se omiten las verificaciones del sitio desplegado.');
+}
+await check('Proyecto Supabase', async () => new URL(url).host);
 await check('Contenido público legible', async () => {
   const [rooms, content, settings] = await Promise.all([
     db.from('public_rooms').select('number'), db.from('public_site_content').select('key'), db.from('public_settings').select('hotel_name'),

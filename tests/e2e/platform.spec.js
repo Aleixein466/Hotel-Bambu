@@ -9,7 +9,7 @@ async function login(page, kind = 'admin') {
   await page.goto('/admin/login');
   await page.getByLabel('Correo electrónico').fill(USERS[kind].email);
   await page.locator('input[name="password"]').fill(USERS[kind].password);
-  await page.getByRole('button', { name: 'Ingresar' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
   await expect(page.getByRole('navigation').getByRole('link', { name: 'Habitaciones' })).toBeVisible();
 }
 
@@ -35,14 +35,14 @@ test('B — credenciales incorrectas, inicio y cierre de sesión', async ({ page
   await page.goto('/admin/login');
   await page.getByLabel('Correo electrónico').fill(USERS.admin.email);
   await page.locator('input[name="password"]').fill('ClaveIncorrecta123');
-  await page.getByRole('button', { name: 'Ingresar' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
   await expect(page.getByRole('alert')).toContainText('Correo o contraseña incorrectos');
   await expect(page).toHaveURL(/\/admin\/login$/);
 
   await page.locator('input[name="password"]').fill(USERS.admin.password);
   await page.getByRole('button', { name: 'Mostrar contraseña' }).click();
   await expect(page.locator('input[name="password"]')).toHaveAttribute('type', 'text');
-  await page.getByRole('button', { name: 'Ingresar' }).click();
+  await page.getByRole('button', { name: 'Iniciar sesión' }).click();
   await expect(page).toHaveURL(/\/admin$/);
 
   await page.getByRole('button', { name: 'Cerrar sesión' }).click();
