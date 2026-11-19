@@ -165,7 +165,8 @@ test('invite-user rechaza a editores, visitantes y cuentas sin rol', async () =>
   });
   const tokenOf = async kind => (await (await signedIn(kind)).auth.getSession()).data.session.access_token;
 
-  expect((await call(ANON_KEY)).status).toBe(403);                 // visitante anónimo
+  expect((await call(ANON_KEY)).status).toBe(401);                 // visitante anónimo (sin sesión)
+  expect((await call('token.falso.firmado')).status).toBe(401);     // token inválido
   expect((await call(await tokenOf('editor'))).status).toBe(403);   // editor
   expect((await call(await tokenOf('outsider'))).status).toBe(403); // cuenta sin rol
   expect((await (await signedIn('editor')).functions.invoke('invite-user', { body: { email } })).error).toBeTruthy();

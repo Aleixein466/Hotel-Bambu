@@ -45,8 +45,18 @@ Deno.serve(async req => {
   if (!anonKey || !serviceKey) return json({ error: 'Función sin configurar.' }, 503);
   const authHeader = req.headers.get('Authorization') ?? '';
 
-  // 1. Verificar al solicitante con SU token (respeta MFA y perfil activo)
-  const asCaller = createClient(url, anonKey, { global: { headers: { Authorization: authHeader } } });
+  // 1. Verificar al solicitante. verify_jwt está desactivado en la puerta de enlace (config.toml) porque
+  //    no es fiable con tokens ES256 (claves de firma asimétricas): la verificación se hace aquí.
+  //    a) El token debe ser una sesión válida y vigente según Auth (firma, vencimiento, sesión no cerrada).
+  const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+  if (!token || token === anonKey || token.startsWith('sb_')) return json({ error: 'Inicia sesión para continuar.' }, 401);
+  const asCaller = createClient(url, anonKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { data: userData, error: userError } = await asCaller.auth.getUser(token);
+  if (userError || !userData?.user) return json({ error: 'Sesión no válida o vencida.' }, 401);
+  //    b) Rol administrativo activo, con segundo factor (AAL2) si la cuenta tiene MFA: lo decide la base.
   const { data: role, error: roleError } = await asCaller.rpc('current_staff_role');
   if (roleError || role !== 'admin') return json({ error: 'Solo un administrador puede invitar usuarios.' }, 403);
 
