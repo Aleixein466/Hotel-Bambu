@@ -15,7 +15,7 @@
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "create-admin": "node scripts/create-admin.mjs",
-    "smoke:prod": "node scripts/smoke-production.mjs"
+    "smoke:prod": "node --env-file-if-exists=.env.production.local scripts/smoke-production.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.1",

@@ -3,8 +3,17 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 // ALLOWED_ORIGIN: lista separada por comas (p. ej. "https://hotelbambu.com,https://www.hotelbambu.com").
-// Obligatoria en producción. Sin ella se admite cualquier origen (solo para desarrollo local).
+// Obligatoria en producción: si falta, la función rechaza todo. Solo el entorno local (http) la puede omitir.
 const allowed = (Deno.env.get('ALLOWED_ORIGIN') ?? '').split(',').map(s => s.trim()).filter(Boolean);
+const isLocal = (Deno.env.get('SUPABASE_URL') ?? '').startsWith('http://');
+
+// Proyectos con claves nuevas exponen SUPABASE_PUBLISHABLE_KEYS / SUPABASE_SECRET_KEYS (JSON {"default": ...});
+// los proyectos con claves heredadas, SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY. Se aceptan ambos.
+function keyFrom(legacy: string, modern: string): string {
+  const direct = Deno.env.get(legacy);
+  if (direct) return direct;
+  try { return JSON.parse(Deno.env.get(modern) ?? '{}').default ?? ''; } catch { return ''; }
+}
 
 function corsFor(origin: string): Record<string, string> {
   return {
@@ -17,6 +26,9 @@ function corsFor(origin: string): Record<string, string> {
 
 Deno.serve(async req => {
   const origin = req.headers.get('origin') ?? '';
+  if (!allowed.length && !isLocal) {
+    return new Response(JSON.stringify({ error: 'Función sin configurar: falta ALLOWED_ORIGIN.' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+  }
   if (allowed.length && !allowed.includes(origin)) {
     return new Response(JSON.stringify({ error: 'Origen no permitido' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
   }
@@ -28,8 +40,9 @@ Deno.serve(async req => {
   if (req.method !== 'POST') return json({ error: 'Método no permitido' }, 405);
 
   const url = Deno.env.get('SUPABASE_URL')!;
-  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-  const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const anonKey = keyFrom('SUPABASE_ANON_KEY', 'SUPABASE_PUBLISHABLE_KEYS');
+  const serviceKey = keyFrom('SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEYS');
+  if (!anonKey || !serviceKey) return json({ error: 'Función sin configurar.' }, 503);
   const authHeader = req.headers.get('Authorization') ?? '';
 
   // 1. Verificar al solicitante con SU token (respeta MFA y perfil activo)

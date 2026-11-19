@@ -1,7 +1,7 @@
 // MFA, recuperación de contraseña, invitaciones y revocación de acceso, contra Supabase local + Mailpit.
 import { test, expect } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
-import { ANON_KEY, URL, createTempUser, deleteUser, ensureUsers, latestEmailLink, serviceClient, totp, totpStep, USERS } from '../helpers.js';
+import { ANON_KEY, URL, createTempUser, deleteUser, ensureUsers, latestEmailLink, serviceClient, signedIn, totp, totpStep, USERS } from '../helpers.js';
 
 const service = serviceClient();
 const opts = { auth: { persistSession: false, autoRefreshToken: false } };
@@ -151,6 +151,27 @@ test('Invitación desde el panel (función invite-user)', async ({ page, browser
     const id = (await service.from('profiles').select('id').eq('email', email).maybeSingle()).data?.id;
     if (id) await deleteUser(id);
   }
+});
+
+test('invite-user rechaza a editores, visitantes y cuentas sin rol', async () => {
+  const fn = `${URL}/functions/v1/invite-user`;
+  const probe = await fetch(fn, { method: 'OPTIONS', headers: { Origin: 'http://127.0.0.1:5179' } }).catch(() => null);
+  test.skip(probe?.status !== 200, 'Función no servida');
+  const email = `no-debe-${Date.now()}@bambu.local`;
+  const call = (token, origin = 'http://127.0.0.1:5179') => fetch(fn, {
+    method: 'POST',
+    headers: { Origin: origin, apikey: ANON_KEY, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, full_name: 'X', role: 'admin' }),
+  });
+  const tokenOf = async kind => (await (await signedIn(kind)).auth.getSession()).data.session.access_token;
+
+  expect((await call(ANON_KEY)).status).toBe(403);                 // visitante anónimo
+  expect((await call(await tokenOf('editor'))).status).toBe(403);   // editor
+  expect((await call(await tokenOf('outsider'))).status).toBe(403); // cuenta sin rol
+  expect((await (await signedIn('editor')).functions.invoke('invite-user', { body: { email } })).error).toBeTruthy();
+  // ninguna de las llamadas creó la cuenta
+  const { data } = await service.from('profiles').select('id').eq('email', email);
+  expect(data).toEqual([]);
 });
 
 test('Desactivar a un usuario corta su acceso aunque tenga sesión abierta', async ({ page }) => {

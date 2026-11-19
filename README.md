@@ -67,14 +67,14 @@ Requisitos: Node 20+, Docker Desktop.
 npm ci
 npx supabase start            # levanta Postgres, Auth, Storage, Realtime y Mailpit locales
 npx supabase db reset         # aplica supabase/migrations/*.sql
-copy .env.example .env.local  # y pega la URL y la "anon key" que muestra `npx supabase status`
+copy .env.example .env.development.local  # URL y "anon key" que muestra `npx supabase status`
 npm run dev                   # http://127.0.0.1:5173
 ```
 
-> **Un solo destino por archivo.** Si una variable aparece dos veces en `.env.local`, gana la última. Para no
-> confundir entornos: `.env.development.local` → Supabase local (`npm run dev`) y
-> `.env.production.local` → producción (`npm run build`). Las pruebas E2E ignoran estos archivos y siempre
-> usan Supabase local en su propio puerto (5179).
+> **Desarrollo y producción separados.** `.env.development.local` (Supabase local) lo usa `npm run dev`;
+> `.env.production.local` (producción, solo clave pública) lo usan `npm run build`, `preview` y `smoke:prod`.
+> No uses `.env.local`: se carga en todos los modos. Si `npm run dev` apunta a un Supabase remoto, la terminal
+> muestra una advertencia en rojo. Las pruebas E2E siempre usan Supabase local en el puerto 5179.
 
 Crear un administrador local (la contraseña se pide de forma oculta):
 
@@ -187,7 +187,7 @@ Variables de entorno de compilación en el hosting (ver `.env.example`):
 ### 7. Verificación después del despliegue
 Primero, la verificación automática de **solo lectura** (solo usa datos públicos; no escribe nada):
 ```powershell
-$env:SITE_URL="https://tu-dominio"; $env:VITE_SUPABASE_URL="https://<ref>.supabase.co"; $env:VITE_SUPABASE_ANON_KEY="<anon>"
+$env:SITE_URL="https://tu-dominio"   # VITE_SUPABASE_* se leen de .env.production.local
 npm run smoke:prod
 ```
 Comprueba HTTPS, CSP/HSTS, rutas SPA, contenido público, que los visitantes no lean tablas privadas ni

@@ -14,8 +14,14 @@ function csp(supabaseUrl) {
   ].join('; ');
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
+  // Desarrollo debe usar Supabase LOCAL (.env.development.local). Si apunta a otro lugar, avisar fuerte:
+  // todo lo que se haga en el navegador escribiría en esa base.
+  if (command === 'serve' && env.VITE_SUPABASE_URL && !/^http:\/\/(127\.0\.0\.1|localhost)[:/]/.test(env.VITE_SUPABASE_URL)) {
+    console.warn(`\n\x1b[41m\x1b[37m  ATENCIÓN: npm run dev está conectado a ${new URL(env.VITE_SUPABASE_URL).host} (no es Supabase local).  \x1b[0m\n` +
+      '  Los cambios que hagas en el panel modificarán esa base. Para desarrollo usa .env.development.local.\n');
+  }
   return {
     plugins: [react()],
     server: { host: '127.0.0.1', port: 5173 },
